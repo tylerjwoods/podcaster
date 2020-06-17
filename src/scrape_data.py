@@ -20,7 +20,14 @@ class Podcasts():
     Then for each show, find episodes and then store those
     episodes in a MongoDB.
 
-    Inputs
+    Use: For example, use:
+    my_podcaster = Podcaster(client_id, client_secret, username, redirect_uri)
+
+    Inputs when declaring.
+    client_id: string, from Spotify
+    client_secret: string, from Spotify
+    username: string, from Spotify
+    redirect_uri: string, defaulted to http://localhost:8880/, App on Spotify needs to match
     '''
     def __init__(self, client_id, client_secret, username, redirect_uri='http://localhost:8880/'):
         self.client_id = str(client_id) # client ID generated from spotify 'Spotify for Developers'
@@ -37,7 +44,7 @@ class Podcasts():
         '''
         client = MongoClient('localhost', 27017)
         db = client['podcast_test']
-        table = db['episodes_8']
+        table = db['episodes_9']
 
         return table
 
@@ -47,7 +54,7 @@ class Podcasts():
         '''
         client = MongoClient('localhost', 27017)
         db = client['podcast_test']
-        table = db['podcasts_8']
+        table = db['podcasts_9']
 
         return table
 
@@ -161,8 +168,6 @@ class Podcasts():
         # print success statement
         print('[INFO] Successfully Performed Search for Podcasts!')
 
-        print(podcasts.head())
-
         # Turn the dataframe into a dictionary
         podcasts_dict = podcasts.to_dict("records")
 
@@ -170,8 +175,15 @@ class Podcasts():
         for each_entry in podcasts_dict:
             new = self._is_entry_new(each_entry, self.podcast_table)
 
+            # if True, load into mongoDB
             if new:
                 self.podcast_table.insert_one(each_entry)
+            # if false, remove from dictionary
+            else:
+                podcasts_dict.remove(each_entry)
+
+        # Load the cleaned dictionary into a dataframe
+        podcasts = pd.DataFrame.from_dict(podcasts_dict)
 
         # send the podcasts dataframe to seperate method for getting
         # episodes of each podcast
@@ -197,26 +209,24 @@ class Podcasts():
         type_ = 'show'
         market = 'US'
         limit = 50
-        offset = 0
-
-        
-
-        # Initialize lists to store responses
-        id_list = []
-        podcast_name = []
-        episode_name_list = []
-        date_list = []
-        dur_list = []
-        desc_list = []
-        audio_preview_url_list = []
-        language_list = []
 
         for id_, name_ in zip(ids, names):
             print(name_)
             counter = 0
             more_runs = 1
+            offset = 0
 
             token = self._get_token()
+
+            # Initialize lists to store responses
+            id_list = []
+            podcast_name = []
+            episode_name_list = []
+            date_list = []
+            dur_list = []
+            desc_list = []
+            audio_preview_url_list = []
+            language_list = []
 
             # declare endpoint URL
             endpoint_url = f'https://api.spotify.com/v1/shows/{id_}/episodes?'
@@ -263,31 +273,33 @@ class Podcasts():
                     # wait 1 second before next call
                     time.sleep(1)
 
-        # Initialize dataframe
-        episodes = pd.DataFrame()
+            # Initialize dataframe
+            episodes = pd.DataFrame()
 
-        # Load lists into dataframe  
-        episodes['spotify_id'] = id_list
-        episodes['podcast_name'] = podcast_name
-        episodes['episode_name'] = episode_name_list
-        episodes['date'] = date_list
-        episodes['duration(ms)'] = dur_list
-        episodes['description'] = desc_list
-        episodes['audio_preview_url'] = audio_preview_url_list
-        episodes['language'] = language_list 
+            # Load lists into dataframe  
+            episodes['spotify_id'] = id_list
+            episodes['podcast_name'] = podcast_name
+            episodes['episode_name'] = episode_name_list
+            episodes['date'] = date_list
+            episodes['duration(ms)'] = dur_list
+            episodes['description'] = desc_list
+            episodes['audio_preview_url'] = audio_preview_url_list
+            episodes['language'] = language_list 
 
-        # print success statement
-        print('[INFO] Successfully Performed Search for Episodes!')    
-        print(episodes.head())
+            
 
-        # Load into a dictionary
-        episodes_dict = episodes.to_dict("records")
+            # Load into a dictionary
+            episodes_dict = episodes.to_dict("records")
 
-        # Check to make sure the entries are new
-        for each_entry in episodes_dict:
-            new = self._is_entry_new(each_entry, self.epsiode_table)
+            # Check to make sure the entries are new
+            for each_entry in episodes_dict:
+                new = self._is_entry_new(each_entry, self.epsiode_table)
 
-            if new:
-                self.epsiode_table.insert_one(each_entry)
+                if new:
+                    self.epsiode_table.insert_one(each_entry)
+
+            # print success statement
+            print('\n[INFO] Successfully Loaded Episodes for {} into MongoDB!\n'.format(name_))    
+            
 
         
