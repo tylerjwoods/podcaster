@@ -157,7 +157,7 @@ class Podcasts():
         podcasts['publisher'] = publisher_list
 
         # print success statement
-        print('[INFO] Successfully Performed Search!')
+        print('[INFO] Successfully Performed Search for Podcasts!')
 
         # Turn the dataframe into a dictionary
         podcasts_dict = podcasts.to_dict("records")
@@ -219,11 +219,11 @@ class Podcasts():
                     query += f'&market={market}'
                     query += f'&limit={limit}'
 
-                    try:
-                        response = requests.get(query,
+                    
+                    response = requests.get(query,
                                                 headers = {"Content-Type":"application/json",
                                                         "Authorization":f"Bearer {token}"})
-                    except:
+                    if response.status_code != 200:
                         # wait 60 seconds then try again
                         time.sleep(60)
                         token = self._get_token()
@@ -256,7 +256,8 @@ class Podcasts():
 
         # Initialize dataframe
         episodes = pd.DataFrame()
-            
+
+        # Load lists into dataframe  
         episodes['id'] = id_list
         episodes['podcast_name'] = podcast_name
         episodes['episode_name'] = episode_name_list
@@ -264,5 +265,17 @@ class Podcasts():
         episodes['duration(ms)'] = dur_list
         episodes['description'] = desc_list
         episodes['audio_preview_url'] = audio_preview_url_list
-        episodes['language'] = language_list     
+        episodes['language'] = language_list 
 
+        # print success statement
+        print('[INFO] Successfully Performed Search for Episodes!')    
+
+        # Load into a dictionary
+        episodes_dict = episodes.to_dict("records")
+
+        # Check to make sure the entries are new
+        for each_entry in episodes_dict:
+            new = self._is_entry_new(each_entry, self.epsiode_table)
+
+            if new:
+                self.epsiode_table.insert_one(each_entry)
