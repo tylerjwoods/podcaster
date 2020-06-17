@@ -130,3 +130,7 @@ dmypy.json
 
 # Notebooks
 notebooks/
+test_notebook.ipynb
+
+# Cached files
+.cache-tyler__j__woods
