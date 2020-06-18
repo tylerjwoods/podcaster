@@ -28,6 +28,9 @@ class Podcasts():
     client_secret: string, from Spotify
     username: string, from Spotify
     redirect_uri: string, defaulted to http://localhost:8880/, App on Spotify needs to match
+
+    Then to search for a topic, for example:
+    my_podcaster.search('data science')
     '''
     def __init__(self, client_id, client_secret, username, redirect_uri='http://localhost:8880/'):
         self.client_id = str(client_id) # client ID generated from spotify 'Spotify for Developers'
