@@ -45,6 +45,7 @@ class Podcasts():
         '''
         Generates table to store the epsiodes of podcasts
         '''
+        # Connect to local host
         client = MongoClient('localhost', 27017)
         db = client['podcast_test']
         table = db['episodes_9']
@@ -55,6 +56,7 @@ class Podcasts():
         '''
         Generates table to store the podcasts information
         '''
+        # Connect to local host
         client = MongoClient('localhost', 27017)
         db = client['podcast_test']
         table = db['podcasts_9']
