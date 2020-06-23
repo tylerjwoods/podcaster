@@ -216,7 +216,7 @@ class Podcasts():
         limit = 50
 
         for id_, name_ in zip(ids, names):
-            print(name_)
+            #print(name_)
             counter = 0
             more_runs = 1
             offset = 0
