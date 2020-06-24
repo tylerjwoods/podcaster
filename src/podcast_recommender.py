@@ -52,7 +52,7 @@ class PodcastRecommender():
         INPUT
         ------
             item - STRING - spotify_id of podcast in the original dataframe
-            n          - INT - Number of top related items to return
+            n    - INT - Number of top related items to return
         OUTPUT
         ------
             spotify_id's - list of the top n related podcast
@@ -105,5 +105,3 @@ class PodcastRecommender():
         user_sim = self.similarity_measure(self.item_counts, user_profile.reshape(1, -1))
 
         return self.item_names[user_sim[:,0].argsort()[-n(num_items+n):-num_items]].values[::-1]
-
-
