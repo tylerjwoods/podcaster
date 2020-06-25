@@ -53,3 +53,51 @@ def build_text_vectorizer(contents, use_tfidf=True, use_stemmer=False, max_featu
         return vectorizer_model.transform(X).toarray()
 
     return vectorizer, vocabulary
+
+def bag_of_words(podcasts, episodes):
+    '''
+    Inputs
+    ------
+    podcasts: pandas dataframe; with columns:
+                _id,
+                spotify_id
+                name
+                desc
+                explicit
+                images
+                languages
+                publisher
+    episodes: pandas dataframe; with columns:
+                _id', 
+                'spotify_id', 
+                'podcast_name', 
+                'episode_name', 
+                'date',
+                'duration(ms)', 
+                'description', 
+                'audio_preview_url', 
+                'language'
+    Returns
+    -------
+    df: pandas dataframe with index as the spotify_id of the podcast and 
+        column bag_of_words
+    '''
+    # create new pandas dataframe with the spotify_id from podcasts
+    df = podcasts[['spotify_id']].copy()
+    # create column placeholder 
+    df['bag_of_words'] = ""
+
+    # iterate over each row in podcasts
+    for index, row in podcasts.iterrows():
+        words = ''
+        # add the desc of the podcast to words
+        words += row['desc'] + ' '
+        # iterate over each row in episodes for that podcast
+        for each_episode in episodes[episodes['podcast_name']==row['name']]['description']:
+            words += each_episode + ' '
+        # assign the bag of words to df
+        df.loc[index, 'bag_of_words'] = words 
+        
+    # set the index as spotify_id
+    df.set_index('spotify_id', inplace=True)
+    return df
