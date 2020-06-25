@@ -23,7 +23,7 @@ class PodcastRecommender():
 
     def fit(self, X, index=None):
         '''
-        Takes a numpy array of item attributes and creates the similarity matrix
+        Takes a numpy array (or pandas DataFrame) of item attributes and creates the similarity matrix
 
         INPUT
         ------

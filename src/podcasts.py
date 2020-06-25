@@ -11,6 +11,7 @@ import numpy as np
 from pymongo import MongoClient
 
 import time
+import os
 
 class Podcasts():
     '''
@@ -21,34 +22,37 @@ class Podcasts():
     episodes in a MongoDB.
 
     Use: For example, use:
-    my_podcaster = Podcaster(client_id, client_secret, username, redirect_uri)
-
-    Inputs when declaring.
-    client_id: string, from Spotify
-    client_secret: string, from Spotify
-    username: string, from Spotify
-    redirect_uri: string, defaulted to http://localhost:8880/, App on Spotify needs to match
+    my_podcaster = Podcaster()
 
     Then to search for a topic, for example:
     my_podcaster.search('data science')
     '''
-    def __init__(self, client_id, client_secret, username, redirect_uri='http://localhost:8880/'):
-        self.client_id = str(client_id) # client ID generated from spotify 'Spotify for Developers'
-        self.client_secret = str(client_secret) # client secret generated from spotify 'Spotify for Developers'
-        self.username = username # spotify username
-        self.redirect_uri = redirect_uri
+    def __init__(self):
+        self.client_id = os.environ['spotify_client_id'] # client ID generated from spotify 'Spotify for Developers'
+        self.client_secret = os.environ['spotify_client_secret'] # client secret generated from spotify 'Spotify for Developers'
+        self.username = os.environ['spotify_username'] # spotify username
+        self.redirect_uri = os.environ['spotify_redirect_uri']
         self.token = self._get_token() # token to make requests with
         self.epsiode_table = self._get_episode_table() # MongoDB table to store episodes
         self.podcast_table = self._get_podcast_table() # MongoDB table to store podcasts
+
+    # def __init__(self, client_id, client_secret, username, redirect_uri='http://localhost:8880/'):
+    #     self.client_id = str(client_id) # client ID generated from spotify 'Spotify for Developers'
+    #     self.client_secret = str(client_secret) # client secret generated from spotify 'Spotify for Developers'
+    #     self.username = username # spotify username
+    #     self.redirect_uri = redirect_uri
+    #     self.token = self._get_token() # token to make requests with
+    #     self.epsiode_table = self._get_episode_table() # MongoDB table to store episodes
+    #     self.podcast_table = self._get_podcast_table() # MongoDB table to store podcasts
 
     def _get_episode_table(self):
         '''
         Generates table to store the epsiodes of podcasts
         '''
-        # Connect to local host
-        client = MongoClient('localhost', 27017)
-        db = client['podcast_test']
-        table = db['episodes_9']
+        # Connect to MongoDB Atlas
+        client = MongoClient(os.environ['mongodb_atlas'])
+        db = client['podcasts']
+        table = db['episode_listings']
 
         return table
 
@@ -56,10 +60,10 @@ class Podcasts():
         '''
         Generates table to store the podcasts information
         '''
-        # Connect to local host
-        client = MongoClient('localhost', 27017)
-        db = client['podcast_test']
-        table = db['podcasts_9']
+        # Connect to MongoDB Atlas
+        client = MongoClient(os.environ['mongodb_atlas'])
+        db = client['podcasts']
+        table = db['show_listings']
 
         return table
 
