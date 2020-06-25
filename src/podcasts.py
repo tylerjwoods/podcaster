@@ -49,10 +49,15 @@ class Podcasts():
         '''
         Generates table to store the epsiodes of podcasts
         '''
-        # Connect to MongoDB Atlas
-        client = MongoClient(os.environ['mongodb_atlas'])
+        # Connect to Localhost
+        client = MongoClient('localhost', 27017)
         db = client['podcasts']
         table = db['episode_listings']
+
+        # Connect to MongoDB Atlas
+        # client = MongoClient(os.environ['mongodb_atlas'])
+        # db = client['podcasts']
+        # table = db['episode_listings']
 
         return table
 
@@ -60,10 +65,15 @@ class Podcasts():
         '''
         Generates table to store the podcasts information
         '''
-        # Connect to MongoDB Atlas
-        client = MongoClient(os.environ['mongodb_atlas'])
+        # Connect to Localhost
+        client = MongoClient('localhost', 27017)
         db = client['podcasts']
         table = db['show_listings']
+
+        # Connect to MongoDB Atlas
+        # client = MongoClient(os.environ['mongodb_atlas'])
+        # db = client['podcasts']
+        # table = db['show_listings']
 
         return table
 
