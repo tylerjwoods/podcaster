@@ -83,7 +83,8 @@ def bag_of_words(podcasts, episodes):
         column bag_of_words
     '''
     # create new pandas dataframe with the spotify_id from podcasts
-    df = podcasts[['spotify_id']].copy()
+    ### CHANGE TO NAME INSTEAD OF spotify_id ###
+    df = podcasts[['name']].copy()
     # create column placeholder 
     df['bag_of_words'] = ""
 
@@ -99,5 +100,5 @@ def bag_of_words(podcasts, episodes):
         df.loc[index, 'bag_of_words'] = words 
         
     # set the index as spotify_id
-    df.set_index('spotify_id', inplace=True)
+    df.set_index('name', inplace=True)
     return df
