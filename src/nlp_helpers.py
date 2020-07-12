@@ -56,6 +56,9 @@ def build_text_vectorizer(contents, use_tfidf=True, use_stemmer=False, max_featu
 
 def bag_of_words(podcasts, episodes):
     '''
+    Takes in podcasts and episodes dataframes and combines
+    the description of each episode into on column to form
+    a bag of words.
     Inputs
     ------
     podcasts: pandas dataframe; with columns:
@@ -68,7 +71,7 @@ def bag_of_words(podcasts, episodes):
                 languages
                 publisher
     episodes: pandas dataframe; with columns:
-                _id', 
+                '_id', 
                 'spotify_id', 
                 'podcast_name', 
                 'episode_name', 
@@ -79,7 +82,7 @@ def bag_of_words(podcasts, episodes):
                 'language'
     Returns
     -------
-    df: pandas dataframe with index as the spotify_id of the podcast and 
+    df: pandas dataframe with index as the name of the podcast and 
         column bag_of_words
     '''
     # create new pandas dataframe with the spotify_id from podcasts
