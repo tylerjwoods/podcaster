@@ -1,6 +1,5 @@
 '''
-This script generates the similarity matrix to use
-on the flask app
+This script generates the bag of words dataframe
 '''
 # Load necessary packages
 import pandas as pd
@@ -9,7 +8,6 @@ from pymongo import MongoClient
 
 # Load helper functions
 from nlp_helpers import build_text_vectorizer, bag_of_words
-from podcast_recommender import PodcastRecommender
 
 def main():
     # load up the mongo client and tables
@@ -35,12 +33,8 @@ def main():
     # Load into a dataframe
     df_bag = pd.DataFrame(X, index=bag_words.index, columns=vocabulary)
 
-    # Create a PodcastRecommender class
-    rec = PodcastRecommender()
-
-    # Fit the df_bag on the Recommender
-    rec.fit(df_bag)
-
+    # Pickle the dataframe, store in data folder
+    df_bag.to_pickle('../data/df_bag_of_words.pkl')
 
 
 if __name__ == '__main__':
