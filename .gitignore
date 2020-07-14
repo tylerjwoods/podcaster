@@ -134,3 +134,6 @@ test_notebook.ipynb
 
 # Cached files
 .cache-tyler__j__woods
+
+# Data Folder
+/data
