@@ -2,53 +2,25 @@
 This script provides a class called PodcastRecommender
 which is a content based recommender based on the
 description of podcast episodes.
+
+This will be used within the web app.
 '''
 # Import Necessary Packages
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import numpy as np
 
-class PodcastRecommender():
+class PodcastRecommenderApp():
     '''
     Content based item recommender
     '''
-    def __init__(self, similarity_measure=None):
-        self.simiarity_matrix = None 
-        self.item_names = None 
+    def __init__(self):
+        # Read pickle of the similarity matrix
+        self.similarity_df = pd.read_pickle('data/similarity_matrix.pkl')
+        self.item_names = self.similarity_df.index
 
-        if similarity_measure == None:
-            self.similarity_measure = cosine_similarity
-        else:
-            self.similarity_measure = similarity_measure
-
-    def fit(self, X, index=None):
-        '''
-        Takes a numpy array (or pandas DataFrame) of item attributes and creates the similarity matrix
-
-        INPUT
-        ------
-            X: numpy array; rows are podcast episodes, columns are feature values / or 
-                pandas dataframe
-            index: LIST - list of podcast id's, i.e., spotify_id
-
-        OUTPUT
-        ------
-            None
-        '''
-        if isinstance(X, pd.DataFrame):
-            self.item_counts = X 
-            self.item_names = X.index 
-            self.similarity_df = pd.DataFrame(self.similarity_measure(X.values, X.values), 
-                                                index = self.item_names)
-        else:
-            self.item_counts = X 
-            self.similarity_df = pd.DataFrame(self.similarity_measure(X, X), 
-                                                index = index)
-            self.item_names = self.similarity_df.index 
-
-        # Pickle the similarity matrix
-        print('Pickeling similarity matrix')
-        self.similarity_df.to_pickle('data/similarity_matrix.pkl')
+        # Read pickle of the bag of words
+        self.item_counts = pd.read_pickle('data/df_bag_of_words.pkl')
     
     def get_recommendations(self, item, n=5):
         '''
@@ -93,7 +65,7 @@ class PodcastRecommender():
 
         INPUT
         ------
-            items - LIST - list of podcast s user likes / has seen
+            items - LIST - list of podcasts user likes / has seen
             n - INT - number of items to return
 
         OUTPUT
