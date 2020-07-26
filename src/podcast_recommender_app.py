@@ -55,7 +55,7 @@ class PodcastRecommenderApp():
         '''
         user_profile = np.zeros(self.item_counts.shape[1]) 
         for item in items:
-            user_profile += self.item_counts.loc[item].values 
+            user_profile += self.item_counts.loc[item].values  
         
         return user_profile
         
