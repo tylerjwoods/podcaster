@@ -18,6 +18,7 @@ class PodcastRecommenderApp():
         # Read pickle of the similarity matrix
         self.similarity_df = pd.read_pickle('data/similarity_matrix.pkl')
         self.item_names = self.similarity_df.index
+        self.similarity_measure = cosine_similarity
 
         # Read pickle of the bag of words
         self.item_counts = pd.read_pickle('data/df_bag_of_words.pkl')
